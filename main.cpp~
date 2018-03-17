@@ -1,0 +1,28 @@
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include "player.cpp"
+
+#define ll long long
+#define vll vector<ll>
+
+using namespace sf;
+
+int main(){
+  Window window(VideoMode(800, 600), "Window");
+
+  while(window.isOpen()){
+    
+    Event event;
+    // Game events
+    while(window.pollEvent(event)){
+      if (event.type == Event::Closed)
+	window.close();
+
+      else if(event.type == Event::TextEntered)
+	window.setTitle(event.text);
+    }
+    
+  }
+  return 0;
+}

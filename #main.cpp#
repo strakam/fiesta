@@ -1,0 +1,20 @@
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include "player.cpp"
+
+#define ll long long
+#define vll vector<ll>
+
+using namespace sf;
+public void proceedEvents(){
+  Event event;
+  
+
+}
+int main(){
+  Window window(VideoMode(800, 600), "Window");
+
+  while(window.isOpen()){
+  return 0;
+}
