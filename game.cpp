@@ -1,13 +1,15 @@
 #include "game.h"
+#include "map.h"
 Game::Game()
-  :window(sf::VideoMode(800, 800), "MyGame"){}
+  :window(sf::VideoMode(1200, 1200), "MyGame"){}
 
 
 void Game::run(){
+  Map::Map map;
   while(window.isOpen()){
     processEvents();
     //update();
-    render();
+    render(map);
   }
 }
 
@@ -19,7 +21,11 @@ void Game::processEvents(){
   }
 }
 
-void Game::render(){
+void Game::render(Map map){
   window.clear();
+  for(auto&& i : map.lines){
+    window.draw(i);
+  }
   window.display();
 }
+
