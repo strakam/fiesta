@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "map.h"
+#include "player.h"
 #include <vector>
 
 class Game{
@@ -11,7 +12,7 @@ class Game{
  private:
   void processEvents();
   void update();
-  void render(Map map);
+  void render(Map map, Player p1);
 
   sf::RenderWindow window;
   std::vector<int> players;

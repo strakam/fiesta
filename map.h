@@ -4,11 +4,14 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+using namespace std;
 class Map{
  public:
   Map();
-  std::string name = "name";
   std::vector<sf::RectangleShape> lines;
+  std::vector<vector<int> > squares;
+  
+  void createSquares(std::vector<vector<int> >& squares);
   void createLines(std::vector<sf::RectangleShape>& lines);
 };
 #endif //MAP_H
