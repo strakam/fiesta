@@ -2,7 +2,7 @@
 #include "map.h"
 #include "player.h"
 #include <cstdlib>
-#include <time.h>eeeeeeeeeeeeeeeeee
+#include <time.h>
 
 Game::Game()
   :window(sf::VideoMode(1185, 1185), "MyGame"){}
@@ -11,7 +11,9 @@ Game::Game()
 void Game::run(){
   std::srand(time(NULL));
   Map::Map map;
-  Player::Player p1(rand()%17, rand()%17);
+  int posX = rand()%17, posY = rand()%17;
+  Player::Player p1(posX, posY);
+  map.squares[posY][posX] = 1;
    while(window.isOpen()){
     processEvents();
     //update()
@@ -29,12 +31,23 @@ void Game::processEvents(){
 
 void Game::render(Map map, Player p1){
   window.clear();
+  // Draw lines
   for(auto&& i : map.lines){
     window.draw(i);
   }
-  sf::RectangleShape shit(sf::Vector2f(120, 50));
-  shit.setFillColor(sf::Color(255, 255, 255));
-  shit.setPosition(p1.x*50, p1.y*50);
-  window.draw(shit);
+  // Draw player trails
+  sf::RectangleShape p1trail(sf::Vector2f(70, 70));
+  p1trail.setFillColor(sf::Color(232, 12, 122));
+  for(int y = 0; y < 16; y++){
+    for(int x = 0; x < 16; x++){
+      if(map.squares[y][x] == 1){
+	p1trail.setPosition(y*75, x*75);
+	window.draw(p1trail);
+      }
+      else if(map.squares[y][x] == 2){
+	
+      }
+    }
+  }
   window.display();
 }

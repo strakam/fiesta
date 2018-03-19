@@ -10,7 +10,7 @@ class Map{
   Map();
   std::vector<sf::RectangleShape> lines;
   std::vector<vector<int> > squares;
-  
+
   void createSquares(std::vector<vector<int> >& squares);
   void createLines(std::vector<sf::RectangleShape>& lines);
 };
