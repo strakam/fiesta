@@ -15,17 +15,27 @@ void Game::run(){
   Player::Player p1(posX, posY);
   map.squares[posY][posX] = 1;
    while(window.isOpen()){
-    processEvents();
-    //update()
+    processEvents(p1);
+    update(map, p1);
     render(map, p1);
   }
 }
 
-void Game::processEvents(){
+void Game::processEvents(Player& p1){
   sf::Event event;
   while(window.pollEvent(event)){
     if(event.type == sf::Event::Closed)
       window.close();
+    else if(event.type == sf::Event::KeyPressed){
+      if(event.key.code == sf::Keyboard::W)
+	p1.x--;
+      else if(event.key.code == sf::Keyboard::A)
+        p1.y--;
+      else if(event.key.code == sf::Keyboard::S)
+	p1.x++;
+      else if(event.key.code == sf::Keyboard::D)
+	p1.y++;
+    }
   }
 }
 
@@ -50,4 +60,8 @@ void Game::render(Map map, Player p1){
     }
   }
   window.display();
+}
+
+void Game::update(Map& map, Player p1){
+  map.squares[p1.y][p1.x] = 1;
 }
