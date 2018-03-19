@@ -10,9 +10,9 @@ class Game{
   Game();
   void run();
  private:
-  void processEvents(Player& p1);
-  void update(Map& map, Player p1);
-  void render(Map map, Player p1);
+  void processEvents(Player& p1, Player& p2);
+  void update(Map& map, Player p1, Player p2);
+  void render(Map map);
 
   sf::RenderWindow window;
   std::vector<int> players;
