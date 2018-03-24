@@ -109,35 +109,35 @@ void Game::processEvents(Player& p1, Player& p2){
   sf::Clock clock;
   while(clock.getElapsedTime().asMilliseconds() < 300){
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
-      if(m1[0] = 0) continue;
+      if(m1[0] == 0) continue;
       m1[0] = 0; m1[1] = -1;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-      if(m1[1] = 0) continue;
+      if(m1[1] == 0) continue;
       m1[0] = -1; m1[1] = 0;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
-      if(m1[0] = 0) continue;
+      if(m1[0] == 0) continue;
       m1[0] = 0; m1[1] = 1;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-      if(m1[1] = 0) continue;
+      if(m1[1] == 0) continue;
       m1[0] = 1; m1[1] = 0;
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::I)){
-      if(m2[1] = 1) continue;
+      if(m2[1] == 1) continue;
       m2[0] = 0; m2[1] = -1;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::J)){
-      if(m2[0] = 1) continue;
+      if(m2[0] == 1) continue;
       m2[0] = -1; m2[1] = 0;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::K)){
-      if(m2[1] = -1) continue;
+      if(m2[1] == -1) continue;
       m2[0] = 0; m2[1] = 1;
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)){
-      if(m2[0] = -1) continue;
+      if(m2[0] == -1) continue;
       m2[0] = 1; m2[1] = 0;
     }
   }
