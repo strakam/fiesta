@@ -6,5 +6,6 @@ class Player{
   int y;
 
   Player(int xcord, int ycord);
+  bool isOut();
 };
 #endif // Player_h
