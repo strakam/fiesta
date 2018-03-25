@@ -8,17 +8,17 @@ Map::Map(){
 
 void Map::createLines(std::vector<sf::RectangleShape>& lines){
   // Creating lines
-  int x = 75, y = 75;
+  int x = 75, y = 0;
   for(int i = 0; i < 15; i++){
     lines.push_back(sf::RectangleShape (sf::Vector2f(1200, 1)));
-    lines[i].setPosition(0, x);
+    lines[i].setPosition(200, x);
     lines[i].setFillColor(sf::Color(192, 192, 192));
     x += 75;
   }
-  for(int i = 0; i < 15; i++){
+  for(int i = 0; i < 17; i++){
     lines.push_back(sf::RectangleShape (sf::Vector2f(1, 1200)));
     lines[i+15].setFillColor(sf::Color(192, 192, 192));
-    lines[i+15].setPosition(y, 0);
+    lines[i+15].setPosition(200+y, 0);
     y += 75;
   }
 }
