@@ -9,6 +9,7 @@ Game::Game()
 
 void Game::run(){
   running =  false;
+  window.setFramerateLimit(5);
   // Main game loop
    while(window.isOpen()){
      if(!running){
@@ -16,13 +17,13 @@ void Game::run(){
        std::srand(time(NULL));
        Map::Map map;
        sf::Clock clock;
-       int posX = rand()%16, posY = rand()%16;
-       int posY2 = 15 - posY;
+       int posX = rand()%24, posY = rand()%24;
+       int posY2 = 23 - posY;
        Player::Player p1(posX, posY);
        Player::Player p2(posX, posY2);
        map.squares[posY2][posX] = 2;
        map.squares[posY][posX] = 1;
-       if(posX > 7){
+       if(posX > 11){
 	 m1[0] = 0; m1[1] = -1;
 	 m2[0] = 0; m2[1] = -1;
        }
@@ -42,28 +43,28 @@ void Game::run(){
 void Game::render(Map map, Player& p1, Player& p2){
   window.clear();
   // Draw player trails
-  sf::RectangleShape p1trail(sf::Vector2f(75, 75));
+  sf::RectangleShape p1trail(sf::Vector2f(50, 50));
   p1trail.setFillColor(sf::Color(232, 12, 122));
-  sf::RectangleShape p2trail(sf::Vector2f(75, 75));
+  sf::RectangleShape p2trail(sf::Vector2f(50, 50));
   p2trail.setFillColor(sf::Color(12, 89, 232));
-  for(int y = 0; y < 16; y++){
-    for(int x = 0; x < 16; x++){
+  for(int y = 0; y < 24; y++){
+    for(int x = 0; x < 24; x++){
       if(map.squares[y][x] == 1){
-	p1trail.setPosition(y*75+200, x*75);
+	p1trail.setPosition(y*50+200, x*50);
 	window.draw(p1trail);
       }
       else if(map.squares[y][x] == 2){
-	p2trail.setPosition(y*75+200, x*75);
+	p2trail.setPosition(y*50+200, x*50);
 	window.draw(p2trail);
       }
     }
   }
   // Draw 'heads' of players
-  sf::RectangleShape p1current(sf::Vector2f(75, 75));
-  p1current.setFillColor(sf::Color(61, 0, 70));
-  p1current.setPosition(p1.y*75+200, p1.x*75);
-  sf::RectangleShape p2current(sf::Vector2f(75, 75));
-  p2current.setPosition(p2.y*75+200, p2.x*75);
+  sf::RectangleShape p1current(sf::Vector2f(50, 50));
+  p1current.setFillColor(sf::Color(61, 0, 50));
+  p1current.setPosition(p1.y*50+200, p1.x*50);
+  sf::RectangleShape p2current(sf::Vector2f(50, 50));
+  p2current.setPosition(p2.y*50+200, p2.x*50);
   p2current.setFillColor(sf::Color(21, 28, 135));
   window.draw(p1current);
   window.draw(p2current);
@@ -106,7 +107,7 @@ void Game::processEvents(Player& p1, Player& p2){
       window.close();
   }
   sf::Clock clock;
-  while(clock.getElapsedTime().asMilliseconds() < 300){
+  while(clock.getElapsedTime().asMilliseconds() < 200){
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
       if(m1[0] == 0) continue;
       m1[0] = 0; m1[1] = -1;
@@ -162,15 +163,15 @@ void Game::setFonts(Font& font, Text& pvptext, Text& pvetext, Text& exittext, Te
   info.setCharacterSize(30);
   cp.setCharacterSize(30);
   
-  pvptext.setFillColor(sf::Color::Red);
-  pvetext.setFillColor(sf::Color::Red);
-  exittext.setFillColor(sf::Color::Red);
+  pvptext.setFillColor(sf::Color::Black);
+  pvetext.setFillColor(sf::Color::Black);
+  exittext.setFillColor(sf::Color::Black);
   info.setFillColor(sf::Color::White);
   cp.setFillColor(sf::Color::White);
   
-  pvptext.setPosition(730, 420);
-  pvetext.setPosition(730, 620);
-  exittext.setPosition(730, 820);
+  pvptext.setPosition(770, 430);
+  pvetext.setPosition(770, 630);
+  exittext.setPosition(770, 830);
   info.setPosition(470, 1100);
   cp.setPosition(670, 1150);
 }
@@ -211,6 +212,8 @@ int Game::preGameEvents(){
 	}
       }
     }
+    if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+      return 1;
   }
   return 0;
 }
@@ -221,15 +224,21 @@ void Game::Options(Font& font, Text& pvptext, Text& pvetext, Text& exittext, Spr
   int x = 700, y = 400;
   sf::RectangleShape pvpSquare1(sf::Vector2f(200, 100));
   pvpSquare1.setPosition(x, y);
-  pvpSquare1.setFillColor(sf::Color(0, 255, 0));
+  pvpSquare1.setFillColor(sf::Color(255, 255, 255));
+  pvpSquare1.setOutlineThickness(5);
+  pvpSquare1.setOutlineColor(sf::Color(0, 0, 0));
   window.draw(pvpSquare1);
   sf::RectangleShape pvpSquare2(sf::Vector2f(200, 100));
+  pvpSquare2.setFillColor(sf::Color(255, 255, 255));
   pvpSquare2.setPosition(x, y+200);
-  pvpSquare2.setFillColor(sf::Color(0, 255, 0));
+  pvpSquare2.setOutlineThickness(5);
+  pvpSquare2.setOutlineColor(sf::Color(0, 0, 0));
   window.draw(pvpSquare2);
   sf::RectangleShape pvpSquare3(sf::Vector2f(200, 100));
   pvpSquare3.setPosition(x, y+400);
-  pvpSquare3.setFillColor(sf::Color(0, 255, 0));
+  pvpSquare3.setFillColor(sf::Color(255, 255, 255));
+  pvpSquare3.setOutlineThickness(5);
+  pvpSquare3.setOutlineColor(sf::Color(0, 0, 0));
   window.draw(pvpSquare3);
 
   window.draw(pvptext);

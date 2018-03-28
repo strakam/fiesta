@@ -6,7 +6,7 @@ Player::Player(int xcord, int ycord){
 }
 
 bool Player::isOut(){
-  if(x > 15 || x < 0 || y > 15 || y < 0)
+  if(x > 23 || x < 0 || y > 23 || y < 0)
     return true;
   else return false;
 }
