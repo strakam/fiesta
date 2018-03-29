@@ -3,6 +3,7 @@
 #include "player.h"
 #include <cstdlib>
 #include <time.h>
+#include <thread>
 
 Game::Game()
   :window(sf::VideoMode(wLength, wHeight), "MyGame"){}
@@ -32,8 +33,17 @@ void Game::run(){
 	 m2[0] = 0; m2[1] = 1;
        }
        running = true;
+       sf::Music music;
+       int randmusic = rand()%3;
+       if(randmusic == 0)
+	 music.openFromFile("sounds/takeonme.ogg");
+       else if(randmusic == 1)
+	 music.openFromFile("sounds/witch.ogg");
+       else if(randmusic == 2)
+	 music.openFromFile("sounds/partytroll.ogg");
+       music.play();
        while(window.isOpen() && running == true){
-	 processEvents(p1, p2);
+	 processEvents(p1, p2, players, map);
 	 update(map, p1, p2);
 	 render(map, p1, p2);
        }
@@ -44,28 +54,33 @@ void Game::render(Map map, Player& p1, Player& p2){
   window.clear();
   // Draw player trails
   sf::RectangleShape p1trail(sf::Vector2f(50, 50));
-  p1trail.setFillColor(sf::Color(232, 12, 122));
+  p1trail.setFillColor(sf::Color(217, 206, 176));
   sf::RectangleShape p2trail(sf::Vector2f(50, 50));
-  p2trail.setFillColor(sf::Color(12, 89, 232));
+  p2trail.setFillColor(sf::Color(139, 255, 141));
   for(int y = 0; y < 24; y++){
     for(int x = 0; x < 24; x++){
       if(map.squares[y][x] == 1){
-	p1trail.setPosition(y*50+200, x*50);
+	p1trail.setPosition(y*50+250, x*50);
 	window.draw(p1trail);
       }
       else if(map.squares[y][x] == 2){
-	p2trail.setPosition(y*50+200, x*50);
+	p2trail.setPosition(y*50+250, x*50);
 	window.draw(p2trail);
       }
     }
   }
   // Draw 'heads' of players
+  sf::Texture doge;
+  doge.loadFromFile("pics/dogep.png");
   sf::RectangleShape p1current(sf::Vector2f(50, 50));
-  p1current.setFillColor(sf::Color(61, 0, 50));
-  p1current.setPosition(p1.y*50+200, p1.x*50);
+  p1current.setTexture(&doge);
+  p1current.setPosition(p1.y*50+250, p1.x*50);
+
+  sf::Texture pepe;
+  pepe.loadFromFile("pics/pepef.jpg");
   sf::RectangleShape p2current(sf::Vector2f(50, 50));
-  p2current.setPosition(p2.y*50+200, p2.x*50);
-  p2current.setFillColor(sf::Color(21, 28, 135));
+  p2current.setPosition(p2.y*50+250, p2.x*50);
+  p2current.setTexture(&pepe);
   window.draw(p1current);
   window.draw(p2current);
   // Draw lines
@@ -99,7 +114,7 @@ void Game::update(Map& map, Player& p1, Player& p2){
   }
 }
 
-void Game::processEvents(Player& p1, Player& p2){
+void Game::processEvents(Player& p1, Player& p2, int players, Map map){
   // Processing Keyboard events
   sf::Event event;
   while(window.pollEvent(event)){
@@ -124,21 +139,23 @@ void Game::processEvents(Player& p1, Player& p2){
       if(m1[1] == 0) continue;
       m1[0] = 1; m1[1] = 0;
     }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::I)){
-      if(m2[1] == 1) continue;
-      m2[0] = 0; m2[1] = -1;
-    }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::J)){
-      if(m2[0] == 1) continue;
-      m2[0] = -1; m2[1] = 0;
-    }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::K)){
-      if(m2[1] == -1) continue;
-      m2[0] = 0; m2[1] = 1;
-    }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)){
-      if(m2[0] == -1) continue;
-      m2[0] = 1; m2[1] = 0;
+    if(players == 2){
+      if(sf::Keyboard::isKeyPressed(sf::Keyboard::I)){
+	if(m2[1] == 1) continue;
+	m2[0] = 0; m2[1] = -1;
+      }
+      else if(sf::Keyboard::isKeyPressed(sf::Keyboard::J)){
+	if(m2[0] == 1) continue;
+	m2[0] = -1; m2[1] = 0;
+      }
+      else if(sf::Keyboard::isKeyPressed(sf::Keyboard::K)){
+	if(m2[1] == -1) continue;
+	m2[0] = 0; m2[1] = 1;
+      }
+      else if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)){
+	if(m2[0] == -1) continue;
+	m2[0] = 1; m2[1] = 0;
+      }
     }
   }
 }
@@ -168,10 +185,11 @@ void Game::setFonts(Font& font, Text& pvptext, Text& pvetext, Text& exittext, Te
   exittext.setFillColor(sf::Color::Black);
   info.setFillColor(sf::Color::White);
   cp.setFillColor(sf::Color::White);
-  
-  pvptext.setPosition(770, 430);
-  pvetext.setPosition(770, 630);
-  exittext.setPosition(770, 830);
+
+  int x = 820;
+  pvptext.setPosition(x, 430);
+  pvetext.setPosition(x, 630);
+  exittext.setPosition(x, 830);
   info.setPosition(470, 1100);
   cp.setPosition(670, 1150);
 }
@@ -179,7 +197,7 @@ void Game::setFonts(Font& font, Text& pvptext, Text& pvetext, Text& exittext, Te
 int Game::preGame(){
   sf::Sprite bg;
   sf::Texture texture;
-  texture.loadFromFile("pics/doge.jpg");
+  texture.loadFromFile("pics/pepedoge.png");
   bg.setTexture(texture);
   sf::Font font;
   font.loadFromFile("fonts/OpenSans-Bold.ttf");
@@ -202,7 +220,7 @@ int Game::preGameEvents(){
     if(event.type == sf::Event::MouseButtonPressed){
       if(event.mouseButton.button == sf::Mouse::Left){
 	sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-	if(mousePos.x > 700 && mousePos.x < 900){
+	if(mousePos.x > 750 && mousePos.x < 950){
 	  if(mousePos.y > 400 && mousePos.y < 500)
 	    return 2;
 	  else if(mousePos.y > 600 && mousePos.y < 700)
@@ -221,7 +239,7 @@ int Game::preGameEvents(){
 void Game::Options(Font& font, Text& pvptext, Text& pvetext, Text& exittext, Sprite& background, Text& info, Text& cp){
   window.clear();
   window.draw(background);
-  int x = 700, y = 400;
+  int x = 750, y = 400;
   sf::RectangleShape pvpSquare1(sf::Vector2f(200, 100));
   pvpSquare1.setPosition(x, y);
   pvpSquare1.setFillColor(sf::Color(255, 255, 255));

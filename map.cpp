@@ -11,14 +11,14 @@ void Map::createLines(std::vector<sf::RectangleShape>& lines){
   int x = 50, y = 0;
   for(int i = 0; i < 23; i++){
     lines.push_back(sf::RectangleShape (sf::Vector2f(1200, 1)));
-    lines[i].setPosition(200, x);
+    lines[i].setPosition(250, x);
     lines[i].setFillColor(sf::Color(192, 192, 192));
     x += 50;
   }
   for(int i = 0; i < 25; i++){
     lines.push_back(sf::RectangleShape (sf::Vector2f(1, 1200)));
     lines[i+23].setFillColor(sf::Color(192, 192, 192));
-    lines[i+23].setPosition(200+y, 0);
+    lines[i+23].setPosition(250+y, 0);
     y += 50;
   }
 }
