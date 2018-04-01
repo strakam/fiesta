@@ -13,9 +13,6 @@ class Game{
  public:
   Game();
   void run();
-  void callBot(){
-
-  };
  private:
   void processEvents(Player& p1, Player& p2, int players, Map map);
   void update(Map& map, Player& p1, Player& p2);
