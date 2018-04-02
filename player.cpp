@@ -24,93 +24,108 @@ void Player::inidirs(){
 }
 
 void Player::calculate(){
-  for(int i = 0; i < 24; i++){
-    for(int x = 0; x < 24; x++)
-      printf("%d ", botmap[i][x]);
-    printf("\n");
-  }
-  printf("\n");/*
-  deque<pair<int, int> > botsearch;
-  vector<vector<pair<int, int> > > pmap;
-  pmap.resize(24);
-  for(int i = 0; i < 24; i++)
-    for(int x = 0; x < 24; x++)
-      pmap[i].push_back(make_pair(0, 0));      
-  int bcount = 0, pcount = 0;
-  int ways[4][2];
-  for(int i = 0; i < 4; i++){
-    ways[i][0] = 0;
-    ways[i][1] = 0;
-  }
+  deque<vector<int> > botsearch;
+  int botbfs[24][24];
+  int ways[4];
+  int ans[4];
+  for(int i = 0; i < 4; i++)
+    ways[i] = 0;
   //bot's bfs
-  for(int i = 0; i < 4; i++){
-    int tx = x + dir[i][1], ty = y + dir[i][0];
-    botsearch.push_back(make_pair(ty, tx));
-    for(int x = 0; x < 24; x++)
-      for(int t = 0; t < 24; t++)
-	if(botmap[x][t] == -1)
-	  botmap[x][t] = 0;
-    botmap[y][x] = -1;
-    do{
-      pair<int, int> cr = botsearch[0];
-      botsearch.pop_front();
-      for(int j = 0; j < 4; j++){
-	int sx = cr.second + dir[j][1], sy = cr.first + dir[j][0];
-	if(botmap[sy][sx] == 0 && !isOut(sy, sx)){
-	  //botsearch.push_back(make_pair(sy, sx));
-	  bcount++;
-	  botmap[sy][sx] = -1;
-	  pmap[sy][sx].first = bcount;
-	  pmap[sy][sx].second = 2;
-	}
-      } 
-    }while(!botsearch.empty());
-  }/*
-  for(int f = 0; f < 24; f++){
-    for(int e = 0; e < 24; e++)
-      printf("%d ", pmap[f][e].second);
-    printf("\n");
-    }*/
-  printf("\n");
-/*
-    //player's bfs
-    tx = x2 + dir[i][0]; ty = y2 + dir[i][1];
-    botsearch.push_back(make_pair(ty, tx));
-    do{
-      for(int j = 0; j < 4; j++){
-	pair<int, int> cr = botsearch[0];
+  for(int i = 0; i < 4; i++){ //vyber smerov bota
+    for(int t = 0; t < 24; t++)
+      for(int r = 0; r < 24; r++){
+	botbfs[t][r] = botmap[t][r];
+	if(botbfs[t][r] == 1)
+	  botbfs[t][r] = -1;
+	else if(botbfs[t][r] == 2)
+	  botbfs[t][r] = -2;
+      }
+    int y1 = y + dir[i][0], x1 = x + dir[i][1];
+    if(!isOut(y1, x1) && botbfs[y1][x1] == 0){ //prvy smer
+      botbfs[y][x] = 0;
+      botbfs[y1][x1] = 1;
+      vector<int> info;
+      info.push_back(y1); info.push_back(x1); info.push_back(1);
+      botsearch.push_back(info);
+      
+      while(!botsearch.empty()){ //bfs 0
+	vector<int> temp = botsearch[0];
 	botsearch.pop_front();
-	int sx = cr.second + dir[j][1], sy = cr.first + dir[j][0];
-	if(botmap[sy][sx] == -1 && isOut(sy, sx)){
-	  pcount++;
-	  if(pmap[sy][sx].first > pcount){
-	    botsearch.push_back(make_pair(sy, sx));
-	    botmap[sy][sx] = 0;
-	    pmap[sy][sx].second = 1;
+	for(int j = 0; j < 4; j++){
+	  int sy = temp[0] + dir[j][0], sx = temp[1] + dir[j][1];
+	  if(!isOut(sy, sx) && botbfs[sy][sx] == 0){
+	    botbfs[sy][sx] = temp[2] + 1;
+	    vector<int> info;
+	    info.push_back(sy); info.push_back(sx); info.push_back(temp[2] + 1);
+	    botsearch.push_back(info);
 	  }
 	}
+      }// tu konci bfs bota
+      
+      int pbfs[24][24];
+      for(int g = 0; g < 4; g++){ //vyber smerov hraca
+	for(int t = 0; t < 24; t++)
+	  for(int r = 0; r < 24; r++){
+	    pbfs[t][r] = botmap[t][r];
+	    if(pbfs[t][r] == 1)
+	      pbfs[t][r] = -1;
+	    else if(pbfs[t][r] == 2)
+	      pbfs[t][r] = -2;
+	  }
+	int yp = y2 + dir[g][0], xp = x2 + dir[g][1];
+	if(!isOut(yp, xp) && pbfs[yp][xp] == 0){ //jeden smer hraca
+	  pbfs[yp][xp] = 1;
+	  vector<int> info;
+	  info.push_back(yp); info.push_back(xp); info.push_back(1);
+	  botsearch.push_back(info);
+	  
+	  while(!botsearch.empty()){
+	    vector<int> temp = botsearch[0];
+	    botsearch.pop_front();
+	    for(int j = 0; j < 4; j++){
+	      int sy = temp[0] + dir[j][0], sx = temp[1] + dir[j][1];
+	      if(!isOut(sy, sx) && pbfs[sy][sx] == 0){
+		pbfs[sy][sx] = temp[2] + 1;
+		vector<int> info;
+		info.push_back(sy); info.push_back(sx); info.push_back(temp[2] + 1);
+		botsearch.push_back(info);
+	      }
+	    }
+	  }//tu konci bfs hraca
+	  for(int j = 0; j < 24; j++){
+	    for(int k = 0; k < 24; k++){
+	      if(botmap[j][k] == 0){
+		if(botbfs[j][k] >= pbfs[j][k])
+		  ways[g]--;
+		else ways[g]++;
+	      }
+	    }
+	  }
+	}// tu konci if (jeden smer hraca)
+      }// tu koncia smery hraca
+      for(int m = 0; m < 24; m++){
+	for(int n = 0; n < 24; n++){
+	  printf("%d ", pbfs[m][n]);
+	}
+	printf("\n");
       }
-    }while(!botsearch.empty());
-    
-    for(int r = 0; r < 24; r++){
-      for(int t = 0; t < 24; t++){
-	if(pmap[r][t].second == 1)
-	  ways[i][1]++;
-	else if(pmap[r][t].second == 2) //bot ma dvojku, hrac 1
-	  ways[i][0]++;
+      printf("\n");
+      int maxi = 0;
+      for(int q = 0; q < 4; q++){
+	if(ways[q] > ways[maxi]) maxi = q;
       }
-    }
-  }/*
-  int result[4];
-  result[0] = ways[0][0] - ways[0][1]; result[1] = ways[1][0] - ways[1][1];
-  result[2] = ways[2][0] - ways[2][1]; result[3] = ways[3][0] - ways[3][1];
-  int ans = 0;
-  for(int i = 1; i < 4; i++){
-    if(result[i] < result[ans])
-      ans = i;
+      ans[i] = ways[maxi];
+      for(int q = 0; q < 4; q++)
+	ways[q] = 0;
+    }// tu konci if (smer bota)
   }
-  if(ans == 0) y--;
-  else if(ans == 1) y++;
-  else if(ans == 2) x--;
-  else if(ans == 3) x++;*/
+  int answer = 0;
+  for(int h = 0; h < 4; h++){
+    if(ans[h] > ans[answer]) answer = h;
+  }
+  for(int h = 0; h <4; h++) ans[h] = 0;
+  if(answer == 0) y--;
+  else if(answer == 1) y++;
+  else if(answer == 2) x--;
+  else if(answer == 3) x++;
 }

@@ -15,7 +15,7 @@ class Game{
   void run();
  private:
   void processEvents(Player& p1, Player& p2, int players, Map map);
-  void update(Map& map, Player& p1, Player& p2);
+  void update(Map& map, Player& p1, Player& p2, int players);
   void render(Map map, Player& p1, Player& p2);
   void checkWin(Map map, Player p1, Player p2);
   void setFonts(Font& font, Text& pvptext, Text& pvetext, Text& exittext, Text& info, Text& cp);

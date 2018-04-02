@@ -43,7 +43,7 @@ void Game::run(){
        music.play();
        while(window.isOpen() && running == true){
 	 processEvents(p1, p2, players, map);
-	 update(map, p1, p2);
+	 update(map, p1, p2, players);
 	 render(map, p1, p2);
        }
      }
@@ -89,10 +89,12 @@ void Game::render(Map map, Player& p1, Player& p2){
   window.display();
 }
 
-void Game::update(Map& map, Player& p1, Player& p2){
+void Game::update(Map& map, Player& p1, Player& p2, int players){
   // Update status of map
   p1.y += m1[0]; p1.x += m1[1];
-  p2.y += m2[0]; p2.x += m2[1];
+  if(players == 2){
+    p2.y += m2[0]; p2.x += m2[1];
+  }
   if(Player::isOut(p1.y, p1.x) || map.squares[p1.y][p1.x] != 0){
     if(Player::isOut(p2.y, p2.x) || map.squares[p2.y][p2.x] != 0){
       window.setTitle("Tie!");
@@ -125,6 +127,7 @@ void Game::processEvents(Player& p1, Player& p2, int players, Map map){
     p2.botmap = map.squares;
     sf::Thread bot (&Player::calculate, &p2);
     bot.launch();
+    bot.wait();
   }
   sf::Clock clock;
   while(clock.getElapsedTime().asMilliseconds() < 200){
@@ -163,6 +166,7 @@ void Game::processEvents(Player& p1, Player& p2, int players, Map map){
       }
     }
   }
+
 }
 
 
