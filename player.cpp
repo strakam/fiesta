@@ -28,8 +28,10 @@ void Player::calculate(){
   int botbfs[24][24];
   int ways[4];
   int ans[4];
-  for(int i = 0; i < 4; i++)
-    ways[i] = 0;
+  for(int i = 0; i < 4; i++){
+    ways[i] = -1000;
+    ans[i] = -1000;
+  }
   //bot's bfs
   for(int i = 0; i < 4; i++){ //vyber smerov bota
     for(int t = 0; t < 24; t++)
@@ -42,7 +44,6 @@ void Player::calculate(){
       }
     int y1 = y + dir[i][0], x1 = x + dir[i][1];
     if(!isOut(y1, x1) && botbfs[y1][x1] == 0){ //prvy smer
-      botbfs[y][x] = 0;
       botbfs[y1][x1] = 1;
       vector<int> info;
       info.push_back(y1); info.push_back(x1); info.push_back(1);
@@ -53,7 +54,7 @@ void Player::calculate(){
 	botsearch.pop_front();
 	for(int j = 0; j < 4; j++){
 	  int sy = temp[0] + dir[j][0], sx = temp[1] + dir[j][1];
-	  if(!isOut(sy, sx) && botbfs[sy][sx] == 0){
+	  if(!isOut(sy, sx) && botbfs[sy][sx] == 0){	  
 	    botbfs[sy][sx] = temp[2] + 1;
 	    vector<int> info;
 	    info.push_back(sy); info.push_back(sx); info.push_back(temp[2] + 1);
@@ -92,8 +93,15 @@ void Player::calculate(){
 	      }
 	    }
 	  }//tu konci bfs hraca
+	  ways[g] = 0;
 	  for(int j = 0; j < 24; j++){
 	    for(int k = 0; k < 24; k++){
+	      if(botbfs[j][k] == 0){
+		botbfs[j][k] = 100;
+	      }
+	      if(pbfs[j][k] == 0){
+		pbfs[j][k] = 100;
+	      }
 	      if(botmap[j][k] == 0){
 		if(botbfs[j][k] >= pbfs[j][k])
 		  ways[g]--;
@@ -101,29 +109,39 @@ void Player::calculate(){
 	      }
 	    }
 	  }
+	  for(int m = 0; m < 24; m++){
+	    for(int n = 0; n < 24; n++){
+	      if(botbfs[m][n] == -2)
+		printf("B ");
+	      else if(botbfs[m][n] == -1)
+		printf("H ");
+	      else{
+		if(botbfs[m][n] == 100)
+		  printf("X ");
+		else if(botbfs[m][n] > 9 && botbfs[m][n] < 100)
+		  printf(". ");
+		else
+		  printf("%d ", botbfs[m][n]);
+	      }
+	    
+	    }
+	    printf("\n");
+	  }
+	  printf("\n");
 	}// tu konci if (jeden smer hraca)
       }// tu koncia smery hraca
-      for(int m = 0; m < 24; m++){
-	for(int n = 0; n < 24; n++){
-	  printf("%d ", pbfs[m][n]);
-	}
-	printf("\n");
-      }
-      printf("\n");
       int maxi = 0;
       for(int q = 0; q < 4; q++){
 	if(ways[q] > ways[maxi]) maxi = q;
       }
       ans[i] = ways[maxi];
       for(int q = 0; q < 4; q++)
-	ways[q] = 0;
+	ways[q] = -1000;
     }// tu konci if (smer bota)
   }
   int answer = 0;
-  for(int h = 0; h < 4; h++){
+  for(int h = 0; h < 4; h++)
     if(ans[h] > ans[answer]) answer = h;
-  }
-  for(int h = 0; h <4; h++) ans[h] = 0;
   if(answer == 0) y--;
   else if(answer == 1) y++;
   else if(answer == 2) x--;

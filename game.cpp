@@ -40,7 +40,7 @@ void Game::run(){
 	 music.openFromFile("sounds/witch.ogg");
        else if(randmusic == 2)
 	 music.openFromFile("sounds/partytroll.ogg");
-       music.play();
+	 music.play();
        while(window.isOpen() && running == true){
 	 processEvents(p1, p2, players, map);
 	 update(map, p1, p2, players);
