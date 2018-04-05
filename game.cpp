@@ -127,10 +127,9 @@ void Game::processEvents(Player& p1, Player& p2, int players, Map map){
     p2.botmap = map.squares;
     sf::Thread bot (&Player::calculate, &p2);
     bot.launch();
-    bot.wait();
   }
   sf::Clock clock;
-  while(clock.getElapsedTime().asMilliseconds() < 200){
+  while(clock.getElapsedTime().asMilliseconds() < 150){
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
       if(m1[1] == 0) continue;
       m1[0] = -1; m1[1] = 0;
@@ -240,7 +239,7 @@ int Game::preGameEvents(){
       }
     }
     if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-      return 1;
+      return 2;
   }
   return 0;
 }
