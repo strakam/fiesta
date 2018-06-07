@@ -23,7 +23,71 @@ void Player::inidirs(){
   dir[3][1] = 1; //Right
 }
 
-void Player::calculate(){
+int Player::dfs(int m, int ty, int tx){
+   vector<vector<int> > ans;
+   ans.resize(4);
+   for(int i = 0; i < 4; i++)
+     ans[i].push_back(-8000);
+   if(m == 2){ //ak sme v tretom tahu, vypocitame ho
+     botmap[ty][tx] = 2;
+     cx = tx; cy = ty;
+     int anss = pdfs(1, y2, x2);
+     botmap[ty][tx] = 0;
+     return anss; // hodnota tretieho tahu
+   }
+   else{ // ak niesme v tretom tahu tak prejdeme vsetky moznosti
+     for(int i = 0; i < 4; i++){
+       int y1 = ty + dir[i][0]; int x1 = tx + dir[i][1];
+       if(!isOut(y1, x1) && botmap[y1][x1] == 0){
+ 	botmap[ty][tx] = 2;
+ 	ans[i][0] = dfs(m+1, y1, x1);
+ 	botmap[ty][tx] = 0;
+       }
+     }
+     // vyber najlepsieho tahu aktualnej cesty
+     if(m == 1){
+       int t = 0;
+       for(int j = 0; j < 4; j++)
+	 if(ans[j][0] > ans[t][0]) t = j;
+       
+       if(t == 0) y--;
+       else if(t == 1) y++;
+       else if(t == 2) x--;
+       else x++;
+     }
+   }  
+}
+
+// v podstate to iste ako bot dfs len ine :D 
+int Player::pdfs(int m, int ty, int tx){
+  vector<int> ans;
+  if(m == 2){
+    botmap[ty][tx] = 1;
+    int anss = calculate(ty, tx, cy, cx);
+    botmap[ty][tx] = 0;
+    return anss;
+  }
+  else{
+    for(int i = 0; i < 4; i++){
+      int y1 = ty + dir[i][0]; int x1 = tx + dir[i][1];
+      if(!isOut(y1, x1) && botmap[y1][x1] == 0){
+	botmap[ty][tx] = 1;
+	ans.push_back(pdfs(m+1, y1, x1));
+	botmap[ty][tx] = 0;
+      }
+    }
+    int mini = 9999;
+    for(int i = 0; i < ans.size(); i++)
+      if (ans[i] <  mini) mini = ans[i];
+    return mini;
+  }
+}
+
+void Player::sickmove(){
+  dfs(1, y, x);
+}
+
+int Player::calculate(int ty, int tx, int cy, int cx){
   deque<vector<int> > botsearch;
   int botbfs[24][24];
   int ways[4];
@@ -42,7 +106,7 @@ void Player::calculate(){
 	else if(botbfs[t][r] == 2)
 	  botbfs[t][r] = -2;
       }
-    int y1 = y + dir[i][0], x1 = x + dir[i][1];
+    int y1 = cy + dir[i][0], x1 = cx + dir[i][1];
     if(!isOut(y1, x1) && botbfs[y1][x1] == 0){ //prvy smer
       botbfs[y1][x1] = 1;
       vector<int> info;
@@ -73,8 +137,8 @@ void Player::calculate(){
 	    else if(pbfs[t][r] == 2)
 	      pbfs[t][r] = -2;
 	  }
-	int yp = y2 + dir[g][0], xp = x2 + dir[g][1];
-	if(!isOut(yp, xp) && pbfs[yp][xp] == 0){ //jeden smer hraca
+	int yp = ty + dir[g][0], xp = tx + dir[g][1];
+ 	if(!isOut(yp, xp) && pbfs[yp][xp] == 0){ //jeden smer hraca
 	  pbfs[yp][xp] = 1;
 	  vector<int> info;
 	  info.push_back(yp); info.push_back(xp); info.push_back(1);
@@ -97,10 +161,10 @@ void Player::calculate(){
 	  for(int j = 0; j < 24; j++){
 	    for(int k = 0; k < 24; k++){
 	      if(botbfs[j][k] == 0){
-		botbfs[j][k] = 100;
+		botbfs[j][k] = 1000;
 	      }
 	      if(pbfs[j][k] == 0){
-		pbfs[j][k] = 100;
+		pbfs[j][k] = 1000;
 	      }
 	      if(botmap[j][k] == 0){
 		if(botbfs[j][k] >= pbfs[j][k])
@@ -109,41 +173,19 @@ void Player::calculate(){
 	      }
 	    }
 	  }
-	  for(int m = 0; m < 24; m++){
-	    for(int n = 0; n < 24; n++){
-	      if(botbfs[m][n] == -2)
-		printf("B ");
-	      else if(botbfs[m][n] == -1)
-		printf("H ");
-	      else{
-		if(botbfs[m][n] == 100)
-		  printf("X ");
-		else if(botbfs[m][n] > 9 && botbfs[m][n] < 100)
-		  printf(". ");
-		else
-		  printf("%d ", botbfs[m][n]);
-	      }
-	    
-	    }
-	    printf("\n");
-	  }
-	  printf("\n");
 	}// tu konci if (jeden smer hraca)
       }// tu koncia smery hraca
       int maxi = 0;
-      for(int q = 0; q < 4; q++){
+      for(int q = 0; q < 4; q++)
 	if(ways[q] > ways[maxi]) maxi = q;
-      }
       ans[i] = ways[maxi];
       for(int q = 0; q < 4; q++)
 	ways[q] = -1000;
     }// tu konci if (smer bota)
-  }
-  int answer = 0;
+  } //tu koncia vsetky smery bota
+  int answer = ans[0];
   for(int h = 0; h < 4; h++)
-    if(ans[h] > ans[answer]) answer = h;
-  if(answer == 0) y--;
-  else if(answer == 1) y++;
-  else if(answer == 2) x--;
-  else if(answer == 3) x++;
+    if(ans[h] < answer) answer = ans[h];
+  //  printf("%d\n", answer);
+  return answer;
 }
