@@ -244,7 +244,7 @@ int Game::preGameEvents(){
       }
     }
     if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-      return 2;
+      return 1;
   }
   return 0;
 }
