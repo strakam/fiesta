@@ -6,7 +6,7 @@
 #include <thread>
 
 Game::Game()
-  :window(sf::VideoMode(wLength, wHeight), "MyGame"){}
+  :window(sf::VideoMode(wLength, wHeight), "Revenge of Pepe the frog"){}
 
 void Game::run(){
   running =  false;
@@ -31,7 +31,7 @@ void Game::run(){
 	 m1[0] = 1; m1[1] = 0;
 	 m2[0] = 1; m2[1] = 0;
        }
-       running = true;/*
+       running = true;
        sf::Music music;
        int randmusic = rand()%3;
        if(randmusic == 0)
@@ -40,7 +40,7 @@ void Game::run(){
 	 music.openFromFile("sounds/witch.ogg");
        else if(randmusic == 2)
 	 music.openFromFile("sounds/partytroll.ogg");
-	 music.play();*/
+	 music.play();
        while(window.isOpen() && running == true){
 	 processEvents(p1, p2, players, map);
 	 update(map, p1, p2, players);
@@ -101,12 +101,12 @@ void Game::update(Map& map, Player& p1, Player& p2, int players){
       running = false;
     }
     else{
-      window.setTitle("P2 Wonnered!");
+      window.setTitle("Pepe Won!");
       running = false;
     }
   }
   else if(Player::isOut(p2.y, p2.x) || map.squares[p2.y][p2.x] != 0){
-    window.setTitle("P1 Wonnered!");
+    window.setTitle("Doge Wonnered!");
     running = false;
   }
   else{
@@ -170,7 +170,6 @@ void Game::processEvents(Player& p1, Player& p2, int players, Map map){
       }
     }
   }
-
 }
 
 
